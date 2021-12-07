@@ -1532,8 +1532,9 @@ public class MyTableW implements /* FocusListener, */MyTable {
 
 		int indexX = -1;
 		int indexY = -1;
+		boolean isDiff = diff != 0;
 		for (int i = columnFrom; i < getColumnCount(); ++i) {
-			GPoint point = getPixel(i, rowFrom, false, false);
+			GPoint point = getPixel(i, rowFrom, false, isDiff);
 			if (x + diff < point.getX()) {
 				indexX = i;
 				break;
@@ -1543,7 +1544,7 @@ public class MyTableW implements /* FocusListener, */MyTable {
 			return null;
 		}
 		for (int i = rowFrom; i < getRowCount(); ++i) {
-			GPoint point = getPixel(columnFrom, i, false, false);
+			GPoint point = getPixel(columnFrom, i, false, isDiff);
 			if (y + diff < point.getY()) {
 				indexY = i;
 				break;
