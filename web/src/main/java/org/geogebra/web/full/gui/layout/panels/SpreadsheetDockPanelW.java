@@ -150,7 +150,9 @@ public class SpreadsheetDockPanelW extends NavigableDockPanelW {
 				sview.getSpreadsheetTable(), app, getOffsetWidth(), getOffsetHeight(), context2d);
 		tableCanvasExporter.paintToCanvas(left, top);
 		context2d.restore();
-		callback.run();
+		if (callback != null) {
+			callback.run();
+		}
 	}
 
 }

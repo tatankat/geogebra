@@ -43,5 +43,4 @@ public interface DockComponent {
 	 *            flag
 	 */
 	public void setDockPanelsVisible(boolean visible);
-
 }

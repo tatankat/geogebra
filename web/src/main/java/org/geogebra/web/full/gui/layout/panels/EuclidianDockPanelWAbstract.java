@@ -405,6 +405,8 @@ public abstract class EuclidianDockPanelWAbstract extends DockPanelW
 			context2d.drawImage(evCanvas, pixelRatio * left, pixelRatio * top);
 			context2d.scale(pixelRatio, pixelRatio);
 		}
-		callback.run();
+		if (callback != null) {
+			callback.run();
+		}
 	}
 }

@@ -15,13 +15,15 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 
+import elemental2.dom.CanvasRenderingContext2D;
+
 /**
  * Split pane which is used to separate two DockPanels.
  * 
  * @author Florian Sonner, adapted by G.Sturr for web
  */
 public class DockSplitPaneW extends ZoomSplitLayoutPanel
-		implements DockComponent {
+		implements DockComponent, PaintToCanvas {
 
 	private Widget leftComponent;
 	private Widget rightComponent;
@@ -570,6 +572,22 @@ public class DockSplitPaneW extends ZoomSplitLayoutPanel
 	public void setComponentOrder(DockPanelW left, DockPanelW right) {
 		leftComponent = left;
 		rightComponent = right;
+	}
+
+	@Override
+	public void paintToCanvas(CanvasRenderingContext2D context2d, Runnable counter, int x, int y) {
+		if (leftComponent != null) {
+			((PaintToCanvas) leftComponent).paintToCanvas(context2d, counter, x, y);
+
+			if (rightComponent != null) {
+				int dx = orientation == SwingConstants.HORIZONTAL_SPLIT
+						? leftComponent.getOffsetWidth() : 0;
+				int dy = orientation == SwingConstants.VERTICAL_SPLIT
+						? leftComponent.getOffsetHeight() : 0;
+				((PaintToCanvas) rightComponent)
+						.paintToCanvas(context2d, counter, x + dx, y + dy);
+			}
+		}
 	}
 
 	/*************************************************************************

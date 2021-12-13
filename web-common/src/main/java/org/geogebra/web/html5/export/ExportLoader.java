@@ -80,7 +80,7 @@ public final class ExportLoader {
 
 	@JsOverlay
 	private static void load(Runnable callback, String name) {
-		String  src = GWT.getModuleBaseURL() + "js/" + name + ".min.js";
+		String  src = GWT.getModuleBaseURL() + "js/" + name + ".js";
 		ScriptLoadCallback loadCallback = new ScriptLoadCallback() {
 			@Override
 			public void onLoad() {

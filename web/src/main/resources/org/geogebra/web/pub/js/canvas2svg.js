@@ -1096,7 +1096,7 @@
             image=args[0],
             dx, dy, dw, dh, sx=0, sy=0, sw, sh, parent, svg, defs, group,
             currentElement, svgImage, canvas, context, id;
-
+        console.error(args);
         if (args.length === 3) {
             dx = args[1];
             dy = args[2];

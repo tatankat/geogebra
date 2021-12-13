@@ -32,7 +32,6 @@ import org.geogebra.web.html5.main.AppW;
 import org.geogebra.web.html5.util.StringConsumer;
 import org.geogebra.web.html5.util.keyboard.KeyboardManagerInterface;
 
-import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Panel;
@@ -41,6 +40,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import elemental2.dom.BaseRenderingContext2D;
 import elemental2.dom.CanvasRenderingContext2D;
+import elemental2.dom.HTMLCanvasElement;
 import jsinterop.base.Js;
 
 /**
@@ -1772,18 +1772,19 @@ public class DockManagerW extends DockManager {
 	 * @param c canvas
 	 * @param callback consumer for the resulting base64 string (without marker)
 	 */
-	public void paintPanels(Canvas c, StringConsumer callback, double scale) {
+	public void paintPanels(HTMLCanvasElement c, StringConsumer callback, double scale,
+			double angle) {
 		int width = (int) (rootPane.getOffsetWidth() * scale);
 		int height = (int) (rootPane.getOffsetHeight() * scale);
-		c.setCoordinateSpaceWidth(width);
-		c.setCoordinateSpaceHeight(height);
-		Runnable counter = new Runnable() {
+		c.width = width;
+		c.height = height;
+		Runnable counter = callback == null ? null : new Runnable() {
 			private int count = dockPanels.size();
 			@Override
 			public void run() {
 				count--;
 				if (count == 0) {
-					callback.consume(StringUtil.removePngMarker(c.toDataUrl()));
+					callback.consume(StringUtil.removePngMarker(c.toDataURL()));
 				}
 			}
 		};
@@ -1792,16 +1793,6 @@ public class DockManagerW extends DockManager {
 		context2d.fillStyle = BaseRenderingContext2D.FillStyleUnionType.of("rgb(200,200,200)");
 		context2d.fillRect(0, 0, width, height);
 		context2d.scale(scale, scale);
-		for (DockPanelW panel: dockPanels) {
-			if (panel.isAttached() && panel.isVisible()) {
-				int left = (int) ((panel.getAbsoluteLeft() - rootPane.getAbsoluteLeft()) / app
-						.getGeoGebraElement().getScaleX());
-				int top = (int) ((panel.getAbsoluteTop() - rootPane.getAbsoluteTop()) / app
-						.getGeoGebraElement().getScaleY());
-				panel.paintToCanvas(context2d, counter, left, top);
-			} else {
-				counter.run();
-			}
-		}
+		rootPane.paintToCanvas(context2d, counter, 0, 0);
 	}
 }
