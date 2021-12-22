@@ -6,6 +6,7 @@ import org.geogebra.common.kernel.algos.AlgoLengthSegment;
 import org.geogebra.common.kernel.algos.AlgoLengthVector;
 import org.geogebra.common.kernel.algos.AlgoTextLength;
 import org.geogebra.common.kernel.arithmetic.Command;
+import org.geogebra.common.kernel.arithmetic.ExpressionNode;
 import org.geogebra.common.kernel.cas.AlgoLengthCurve;
 import org.geogebra.common.kernel.cas.AlgoLengthCurve2Points;
 import org.geogebra.common.kernel.cas.AlgoLengthFunction;
@@ -15,6 +16,8 @@ import org.geogebra.common.kernel.geos.GeoFunction;
 import org.geogebra.common.kernel.geos.GeoList;
 import org.geogebra.common.kernel.geos.GeoLocusable;
 import org.geogebra.common.kernel.geos.GeoNumeric;
+import org.geogebra.common.kernel.geos.GeoPoint;
+import org.geogebra.common.kernel.geos.GeoSymbolic;
 import org.geogebra.common.kernel.geos.GeoText;
 import org.geogebra.common.kernel.geos.GeoVec3D;
 import org.geogebra.common.kernel.kernelND.GeoConicPartND;
@@ -23,6 +26,7 @@ import org.geogebra.common.kernel.kernelND.GeoPointND;
 import org.geogebra.common.kernel.kernelND.GeoSegmentND;
 import org.geogebra.common.kernel.kernelND.GeoVectorND;
 import org.geogebra.common.main.MyError;
+import org.geogebra.common.plugin.Operation;
 
 /**
  * Length[ &lt;GeoVector> ] Length[ &lt;GeoPoint> ]
@@ -64,9 +68,20 @@ public class CmdLength extends CommandProcessor {
 						length(c.getLabel(), (GeoVectorND) arg[0]) };
 				return ret;
 			} else if (arg[0].isGeoPoint()) {
-				GeoElement[] ret = {
-						length(c.getLabel(), (GeoPointND) arg[0]) };
-				return ret;
+				if (GeoPoint.isComplexNumber(arg[0])) {
+					ExpressionNode node = new ExpressionNode(kernel, c.getArgument(0), Operation.ABS, null);
+					GeoSymbolic sym = new GeoSymbolic(cons);
+					sym.setDefinition(node);
+					sym.computeOutput();
+					sym.setSelected(false);
+
+					GeoElement[] ret = { sym };
+					return ret;
+				} else {
+					GeoElement[] ret = {
+							length(c.getLabel(), (GeoPointND) arg[0]) };
+					return ret;
+				}
 			} else if (arg[0].isGeoList()) {
 				GeoElement[] ret = { getAlgoDispatcher().length(c.getLabel(),
 						(GeoList) arg[0]) };
