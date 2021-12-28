@@ -81,6 +81,7 @@ public class ItemControls extends FlowPanel
 				@Override
 				public void onClickStart(int x, int y, PointerEventType type) {
 					getController().preventBlur();
+					radioTreeItem.getController().updateSelection(false, false);
 					openMoreMenu();
 					DOM.setCapture(null); // reset capture from GCustomButton's mousedown handler
 				}
